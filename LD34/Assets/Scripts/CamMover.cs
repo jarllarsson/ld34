@@ -8,12 +8,10 @@ public class CamMover : MonoBehaviour
     public float m_keyMovePlaceMultiplier = 10.0f;
     public float m_mouseMoveZoomMultiplier = 10.0f;
     public Vector2 m_xRotateLims = new Vector2(300, 70);
-    public bool isDragging = false;
-    private float m_dragStatCoolDown = 0.4f;
+    public bool isRightMouseButtonDragging = false;
+    private float m_dragStatCoolDown = 0.2f;
     private float m_dragStatCoolDownTick = 0.0f;
 
-    public float m_rayCastOffset = 100.0f;
-    public float m_rayCastBound = 100.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -24,26 +22,10 @@ public class CamMover : MonoBehaviour
 	void Update () 
 	{
         InputHandling();
-        GroundCollideHandling();
 	}
 
 
-    void GroundCollideHandling()
-    {
-        RaycastHit rayHit;
-        if (Physics.Raycast(new Ray(transform.position + Vector3.up * m_rayCastOffset, Vector3.down), out rayHit))
-        {
-            if (transform.position.y < rayHit.point.y + m_rayCastBound)
-            {
-                Debug.DrawLine(transform.position + Vector3.up * m_rayCastOffset, rayHit.point, Color.green);
-                transform.position = new Vector3(transform.position.x, rayHit.point.y + m_rayCastBound, transform.position.z);
-            }
-            else
-            {
-                Debug.DrawLine(transform.position + Vector3.up * m_rayCastOffset, rayHit.point, Color.grey);
-            }
-        }
-    }
+
 
 
     void InputHandling()
@@ -55,7 +37,7 @@ public class CamMover : MonoBehaviour
         {
             if (Mathf.Abs(mouseInput.x) > 0.02f || Mathf.Abs(mouseInput.y) > 0.02f)
             {
-                isDragging = true;
+                isRightMouseButtonDragging = true;
                 m_dragStatCoolDownTick = m_dragStatCoolDown;
             }
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(-mouseInput.y, mouseInput.x, 0.0f) * m_mouseMoveRotateMultiplier);
@@ -70,7 +52,7 @@ public class CamMover : MonoBehaviour
             m_dragStatCoolDownTick -= Time.deltaTime;
             if (m_dragStatCoolDownTick < 0.0f)
             {
-                isDragging = false;
+                isRightMouseButtonDragging = false;
             }
         }
         // Move
