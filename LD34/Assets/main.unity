@@ -348,9 +348,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mouseMoveRotateMultiplier: 10
   m_mouseMovePlaceMultiplier: 10
+  m_keyMovePlaceMultiplier: 1
   m_mouseMoveZoomMultiplier: 30
   m_xRotateLims: {x: 300, y: 70}
   isDragging: 0
+  m_rayCastOffset: 100
+  m_rayCastBound: 100
 --- !u!1 &938431058
 GameObject:
   m_ObjectHideFlags: 0
