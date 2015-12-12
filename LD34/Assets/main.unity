@@ -353,7 +353,49 @@ MonoBehaviour:
   m_xRotateLims: {x: 300, y: 70}
   isDragging: 0
   m_rayCastOffset: 100
-  m_rayCastBound: 100
+  m_rayCastBound: 5
+--- !u!1001 &882515844
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 272.899994
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 54.2999992
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 181
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 428852, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 0b16e6a6d61deb64794fd8a793a1fad8, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &938431058
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,8 +404,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 938431059}
-  - 135: {fileID: 938431061}
-  - 54: {fileID: 938431060}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -384,33 +424,6 @@ Transform:
   - {fileID: 2030681699}
   m_Father: {fileID: 0}
   m_RootOrder: 4
---- !u!54 &938431060
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 938431058}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: .0500000007
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!135 &938431061
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 938431058}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 3
-  m_Center: {x: 0, y: 3, z: 0}
 --- !u!1 &1828846203
 GameObject:
   m_ObjectHideFlags: 0
