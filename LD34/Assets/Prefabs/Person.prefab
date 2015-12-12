@@ -14,6 +14,7 @@ GameObject:
   - 114: {fileID: 11404014}
   - 114: {fileID: 11474648}
   - 114: {fileID: 11420050}
+  - 114: {fileID: 11471614}
   m_Layer: 8
   m_Name: Person
   m_TagString: Untagged
@@ -95,6 +96,7 @@ MonoBehaviour:
   m_ignoreLayer:
     serializedVersion: 2
     m_Bits: 1296
+  m_enabled: 1
 --- !u!114 &11420050
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -104,6 +106,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b7a90573c12648d46844da0ca3632442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11471614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 137990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb3edbdebf9d0e4a85f133974206215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11474648

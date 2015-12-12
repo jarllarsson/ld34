@@ -931,6 +931,7 @@ MonoBehaviour:
   m_ignoreLayer:
     serializedVersion: 2
     m_Bits: 0
+  m_enabled: 1
 --- !u!1001 &600777445
 Prefab:
   m_ObjectHideFlags: 0
@@ -1411,6 +1412,7 @@ MonoBehaviour:
   m_ignoreLayer:
     serializedVersion: 2
     m_Bits: 1280
+  m_enabled: 1
 --- !u!114 &938431062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1424,7 +1426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mover: {fileID: 938431063}
   m_dbgTextbox: {fileID: 2127385194}
-  m_inputWaitTime: 4
+  m_inputWaitTime: 1
 --- !u!114 &938431063
 MonoBehaviour:
   m_ObjectHideFlags: 0
