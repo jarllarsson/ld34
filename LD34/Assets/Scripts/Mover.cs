@@ -38,6 +38,10 @@ public class Mover : MonoBehaviour {
             if (m_waterAvoidTimer > 0.0f) m_waterAvoidTimer -= Time.deltaTime;
             if (m_avoidWater && m_waterAvoidTimer <= 0.0f) AvoidWater();
         }
+        else
+        {
+            m_dir = Vector3.zero;
+        }
 	}
 
     private void Move()

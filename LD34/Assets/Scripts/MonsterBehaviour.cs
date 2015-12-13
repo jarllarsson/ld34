@@ -314,7 +314,7 @@ public class MonsterBehaviour : MonoBehaviour
 		holdAndWaitNode.m_children.Add(putdownNode);
 		holdAndWaitNode.m_weigths.Add(0.333f);
 
-        holdAndWaitNode.AddWeigth(0.5f, 2);
+        //holdAndWaitNode.AddWeigth(0.5f, 2); Make nicer for put down
 
 		ActionTreeNode pickupNode = new ActionTreeNode();
 		pickupNode.m_actionType = MonsterAction.Pickup;

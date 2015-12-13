@@ -159,6 +159,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb3edbdebf9d0e4a85f133974206215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_animator: {fileID: 9523316}
+  m_sex: 0
+  m_age: 1
+  m_billboard: {fileID: 469690}
 --- !u!114 &11474648
 MonoBehaviour:
   m_ObjectHideFlags: 1
