@@ -60,7 +60,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 117476}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -1.62920685e-07}
-  m_LocalPosition: {x: 0, y: 1.60000002, z: 0}
+  m_LocalPosition: {x: 0, y: .986000001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 469690}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_rayCastOffset: 100
-  m_rayCastBound: .5
+  m_rayCastBound: 0
   m_lockToGround: 1
   m_ignoreLayer:
     serializedVersion: 2
@@ -195,7 +195,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 1.86000001
-  m_Center: {x: 0, y: 1.50999999, z: 0}
+  m_Center: {x: 0, y: 1.87, z: 0}
 --- !u!212 &21267504
 SpriteRenderer:
   m_ObjectHideFlags: 1
