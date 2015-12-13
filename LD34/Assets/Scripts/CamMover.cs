@@ -11,6 +11,7 @@ public class CamMover : MonoBehaviour
     public bool isRightMouseButtonDragging = false;
     private float m_dragStatCoolDown = 0.2f;
     private float m_dragStatCoolDownTick = 0.0f;
+    public Camera m_camera;
 
 
 	// Use this for initialization
@@ -22,6 +23,15 @@ public class CamMover : MonoBehaviour
 	void Update () 
 	{
         InputHandling();
+
+        if (transform.position.y > 98.0f)
+        {
+            m_camera.nearClipPlane = 10.0f;
+        }
+        else
+        {
+            m_camera.nearClipPlane = 1.0f;
+        }
 	}
 
 
