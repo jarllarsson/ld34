@@ -75,7 +75,24 @@ public class MonsterAnimationController : MonoBehaviour
     // Throw
 
 
+    // Putdown
+    public void PlayPutdown()
+    {
+        Debug.Log("PlayPutdown!");
+        m_animator.SetTrigger("monster_putdown");
+    }
 
+    public void EventPutdownDone()
+    {
+        Debug.Log("PutdownDone!");
+        m_mbehaviour.m_putDownDone = true;
+    }
+
+    public void EventDetachPickupTarget()
+    {
+        Debug.Log("Detach!");
+        m_mbehaviour.DetachCurrentlyHoldingToHand();
+    }
 
 
 

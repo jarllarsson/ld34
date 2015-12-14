@@ -8,6 +8,7 @@ TagManager:
   - Monster
   - Water
   - pickedupObj
+  - debree
   layers:
   - Default
   - TransparentFX

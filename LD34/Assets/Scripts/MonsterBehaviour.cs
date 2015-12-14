@@ -57,6 +57,8 @@ public class MonsterBehaviour : MonoBehaviour
     public Transform m_attachHand;
 
     public bool m_pickupDone = false;
+    public bool m_putDownDone = false;
+    private bool m_putDownStarted = false;
     public bool m_eatDone = false;
     private bool m_isHoldingState = false;
 
@@ -72,8 +74,9 @@ public class MonsterBehaviour : MonoBehaviour
         m_actionQueue.Clear(); // will also remove input wait
         m_isHoldingState = false;
         m_pickupDone = false;
+        m_putDownDone = false;
+        m_putDownStarted = false;
         m_eatDone = false;
-        m_animationController.ResetAnimState();
     }
 
 	// Update is called once per frame
@@ -127,32 +130,7 @@ public class MonsterBehaviour : MonoBehaviour
 					}
 				case MonsterAction.PutDown:
 					{
-						if (m_currentlyHolding)
-						{
-							Debug.Log("Away you go..");
-							VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
-							if (controller)
-							{
-								controller.transform.parent = null;
-								controller.PutDown();
-							}
-                            else if (m_currentlyHolding.tag == "pickedupObj")
-                            {
-                                m_currentlyHolding.gameObject.tag = "debree";
-                                m_currentlyHolding.transform.parent = null;
-                                if (!m_currentlyHolding.GetComponent<Rigidbody>())
-                                    m_currentlyHolding.gameObject.AddComponent<Rigidbody>();
-                                else
-                                    m_currentlyHolding.GetComponent<Rigidbody>().isKinematic = false;
-
-                                if (!m_currentlyHolding.GetComponent<Collider>())
-                                    m_currentlyHolding.gameObject.AddComponent<Collider>();
-                                else
-                                    m_currentlyHolding.GetComponent<Collider>().isTrigger = false;
-                            }
-                            m_currentlyHolding = null;
-						}
-						dequeue = true;
+                        dequeue = PutdownAction();
 						break;
 					}
 			}
@@ -178,6 +156,68 @@ public class MonsterBehaviour : MonoBehaviour
 		}
 
 	}
+
+    bool PutdownAction()
+    {
+        if (m_currentlyHolding)
+        {
+            if (!m_putDownStarted)
+            {
+                m_animationController.PlayPutdown();
+                m_putDownStarted = true;
+            }
+            if (m_putDownDone)
+            {
+                m_putDownStarted = false;
+                m_putDownDone = false;
+                m_animationController.ResetAnimState();
+                return true; // wait for animation here
+            }
+            else
+                return false;
+        }
+        else
+        {
+            if (m_putDownDone)
+            {
+                m_putDownStarted = false;
+                m_putDownDone = false;
+                m_animationController.ResetAnimState();
+                return true; // wait for animation here
+            }
+            else
+                return false;
+        }
+    }
+
+    public void DetachCurrentlyHoldingToHand()
+    {
+        if (m_currentlyHolding)
+        {
+            Debug.Log("Away you go..");
+            VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
+            if (controller)
+            {
+                controller.transform.parent = null;
+                controller.PutDown();
+            }
+            else if (m_currentlyHolding.tag == "pickedupObj")
+            {
+                m_currentlyHolding.gameObject.tag = "debree";
+                m_currentlyHolding.transform.parent = null;
+                if (!m_currentlyHolding.GetComponent<Rigidbody>())
+                    m_currentlyHolding.gameObject.AddComponent<Rigidbody>();
+                else
+                    m_currentlyHolding.GetComponent<Rigidbody>().isKinematic = false;
+
+                if (!m_currentlyHolding.GetComponent<Collider>())
+                    m_currentlyHolding.gameObject.AddComponent<Collider>();
+                else
+                    m_currentlyHolding.GetComponent<Collider>().isTrigger = false;
+            }
+            m_currentlyHolding = null;
+        }
+    }
 
     bool EatAction()
     {
@@ -370,6 +410,7 @@ public class MonsterBehaviour : MonoBehaviour
         }
         else
         {
+            m_animationController.ResetAnimState();
             // if just walking
             // First walk
             m_actionQueue.Enqueue(MonsterBehaviour.MonsterAction.Walk);
