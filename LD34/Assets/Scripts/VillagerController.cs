@@ -107,6 +107,11 @@ public class VillagerController : MonoBehaviour
         isPickedUp = true;
     }
 
+    public bool IsPickedUp()
+    {
+        return isPickedUp;
+    }
+
     public void PutDown()
     {
         if (m_mover) m_mover.m_enabled = true;

@@ -51,9 +51,12 @@ public class MonsterBehaviour : MonoBehaviour
 	public float m_inputWaitTime = 4.0f;
 	private float m_inputWaitTimer = 0.0f;
 	private Transform m_currentlyHolding;
+    public MonsterAnimationController m_animationController;
 
     public float m_rootMotionControllerSpd = 1.0f;
     public Transform m_attachHand;
+
+    public bool m_pickupDone = false;
 
 	// Use this for initialization
 	void Start () 
@@ -144,6 +147,7 @@ public class MonsterBehaviour : MonoBehaviour
 		}
 		else
 		{
+            m_animationController.ResetAnimState();
 			m_actionQueue.Enqueue(MonsterAction.Walk);
 		}
 
@@ -154,19 +158,35 @@ public class MonsterBehaviour : MonoBehaviour
 		if (m_currentlyHolding)
 		{
 			VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
-			if (controller) controller.PickedUp();
-			controller.transform.parent = transform;
-			controller.transform.localPosition = Vector3.forward * 3.0f + Vector3.up * 3.0f;
-			m_actionQueue.Enqueue(MonsterAction.HoldWaitForInput);
-			m_inputWaitTimer = m_inputWaitTime;
-			Debug.Log("Picked up " + m_currentlyHolding.name + "successfully");
-			return true; // maybe add wait for animation here later
+            if (!controller.IsPickedUp())
+            {
+                if (controller) controller.PickedUp();
+                m_animationController.PlayPickup(); // will trigger attach and next state
+                m_actionQueue.Enqueue(MonsterAction.HoldWaitForInput);
+                m_inputWaitTimer = m_inputWaitTime;
+                Debug.Log("Picked up " + m_currentlyHolding.name + "successfully");
+            }
+            if (m_pickupDone)
+                return true; // wait for animation here
+            else
+                return false;
 		}
 		else
 		{
 			return true;
 		}
 	}
+
+    public void AttachCurrentlyHoldingToHand()
+    {
+        VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
+        if (controller.IsPickedUp())
+        {
+            controller.transform.parent = m_attachHand.transform;
+            controller.transform.up = Vector3.up;
+            controller.transform.localPosition = Vector3.zero;
+        }
+    }
 
 
 	bool HoldAndWait()
@@ -215,6 +235,7 @@ public class MonsterBehaviour : MonoBehaviour
 					if (m_currentlyHolding)
 					{
 						m_actionQueue.Enqueue(MonsterAction.Pickup);
+                        m_pickupDone = false;
 						Debug.Log("Arrived at " + m_currentlyHolding.name + " will try pickup");
 					}
                     else

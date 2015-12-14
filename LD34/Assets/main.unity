@@ -1209,6 +1209,10 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 544651a1eb54e7841bd6e86d847eb32a, type: 2}
   m_IsPrefabParent: 0
+--- !u!4 &651727703 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400014, guid: 4412454aa4937d342a9261d18bd9d628, type: 3}
+  m_PrefabInternal: {fileID: 1305661423}
 --- !u!1 &672311541
 GameObject:
   m_ObjectHideFlags: 0
@@ -1406,6 +1410,33 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 544651a1eb54e7841bd6e86d847eb32a, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &718425759
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 718425760}
+  m_Layer: 0
+  m_Name: PickupAttach
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &718425760
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 718425759}
+  m_LocalRotation: {x: -.00809450354, y: .163754225, z: .687835634, w: .707107604}
+  m_LocalPosition: {x: -1.75032258, y: .549979448, z: -.15000692}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 651727703}
+  m_RootOrder: 0
 --- !u!4 &764363171 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: a8b30903074222143a70b1778c5cf6c3, type: 3}
@@ -1611,7 +1642,6 @@ GameObject:
   - 114: {fileID: 938431061}
   - 136: {fileID: 938431060}
   - 114: {fileID: 938431063}
-  - 114: {fileID: 938431064}
   m_Layer: 10
   m_Name: Monster
   m_TagString: Monster
@@ -1677,8 +1707,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mover: {fileID: 938431063}
   m_dbgTextbox: {fileID: 2127385194}
-  m_inputWaitTime: 1
+  m_inputWaitTime: 4
+  m_animationController: {fileID: 1630684543}
   m_rootMotionControllerSpd: 1
+  m_attachHand: {fileID: 718425760}
+  m_pickupDone: 0
 --- !u!114 &938431063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1701,20 +1734,6 @@ MonoBehaviour:
   m_loiter: 0
   m_enabled: 0
   m_rootMotionController: {fileID: 672311543}
---- !u!114 &938431064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 938431058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bf3e55b0e43ed2499294c7a66fe67a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_animator: {fileID: 1630684542}
-  m_mover: {fileID: 938431063}
-  m_mbehaviour: {fileID: 938431062}
 --- !u!1001 &939526399
 Prefab:
   m_ObjectHideFlags: 0
@@ -2471,11 +2490,29 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 544651a1eb54e7841bd6e86d847eb32a, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1630684541 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100032, guid: 4412454aa4937d342a9261d18bd9d628, type: 3}
+  m_PrefabInternal: {fileID: 1305661423}
 --- !u!95 &1630684542 stripped
 Animator:
   m_PrefabParentObject: {fileID: 9500000, guid: 4412454aa4937d342a9261d18bd9d628,
     type: 3}
   m_PrefabInternal: {fileID: 1305661423}
+--- !u!114 &1630684543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1630684541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf3e55b0e43ed2499294c7a66fe67a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_animator: {fileID: 1630684542}
+  m_mover: {fileID: 938431063}
+  m_mbehaviour: {fileID: 938431062}
 --- !u!1001 &1648038306
 Prefab:
   m_ObjectHideFlags: 0

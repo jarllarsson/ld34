@@ -23,7 +23,7 @@ public class LandCollider : MonoBehaviour
 
     void LateUpdate()
     {
-        GroundCollideHandling();
+        if (m_enabled) GroundCollideHandling();
     }
 
 
