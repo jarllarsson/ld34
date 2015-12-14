@@ -65,6 +65,8 @@ ModelImporter:
     3300000: //RootNode
     4300000: Cube
     7400000: Default Take
+    7400002: Still
+    7400004: Walk
     9500000: //RootNode
     13700000: Cube
   materials:
