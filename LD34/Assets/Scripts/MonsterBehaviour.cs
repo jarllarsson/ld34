@@ -57,6 +57,8 @@ public class MonsterBehaviour : MonoBehaviour
     public Transform m_attachHand;
 
     public bool m_pickupDone = false;
+    public bool m_eatDone = false;
+    private bool m_isHoldingState = false;
 
 	// Use this for initialization
 	void Start () 
@@ -65,6 +67,15 @@ public class MonsterBehaviour : MonoBehaviour
 		SetupDecisionTree();
 	}
 	
+    void Reset()
+    {
+        m_actionQueue.Clear(); // will also remove input wait
+        m_isHoldingState = false;
+        m_pickupDone = false;
+        m_eatDone = false;
+        m_animationController.ResetAnimState();
+    }
+
 	// Update is called once per frame
 	void Update () 
 	{
@@ -125,6 +136,21 @@ public class MonsterBehaviour : MonoBehaviour
 								controller.transform.parent = null;
 								controller.PutDown();
 							}
+                            else if (m_currentlyHolding.tag == "pickedupObj")
+                            {
+                                m_currentlyHolding.gameObject.tag = "debree";
+                                m_currentlyHolding.transform.parent = null;
+                                if (!m_currentlyHolding.GetComponent<Rigidbody>())
+                                    m_currentlyHolding.gameObject.AddComponent<Rigidbody>();
+                                else
+                                    m_currentlyHolding.GetComponent<Rigidbody>().isKinematic = false;
+
+                                if (!m_currentlyHolding.GetComponent<Collider>())
+                                    m_currentlyHolding.gameObject.AddComponent<Collider>();
+                                else
+                                    m_currentlyHolding.GetComponent<Collider>().isTrigger = false;
+                            }
+                            m_currentlyHolding = null;
 						}
 						dequeue = true;
 						break;
@@ -147,27 +173,68 @@ public class MonsterBehaviour : MonoBehaviour
 		}
 		else
 		{
-            m_animationController.ResetAnimState();
+            Reset();
 			m_actionQueue.Enqueue(MonsterAction.Walk);
 		}
 
 	}
 
+    bool EatAction()
+    {
+        if (m_currentlyHolding)
+        {
+            VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
+            if (controller.IsPickedUp())
+            {
+                m_animationController.PlayEat(); // will trigger attach and next state
+            }
+        }
+        if (m_eatDone)
+        {
+            m_eatDone = false;
+            return true; // wait for animation here
+        }
+        else
+            return false;
+    }
+
     bool PickupAction()
 	{
 		if (m_currentlyHolding)
 		{
+            Debug.Log("Trying pick up..");
 			VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
-            if (!controller.IsPickedUp())
+            if (controller)
             {
-                if (controller) controller.PickedUp();
+                if (!controller.IsPickedUp())
+                {
+                    if (controller) controller.PickedUp();
+                    m_animationController.PlayPickup(); // will trigger attach and next state
+                    m_actionQueue.Enqueue(MonsterAction.HoldWaitForInput);
+                    m_inputWaitTimer = m_inputWaitTime;
+                    Debug.Log("Picked up " + m_currentlyHolding.name + "successfully");
+                }
+                else
+                {
+                    // Debug.Log(m_currentlyHolding.name + "is in picked up state already!!");
+                }
+            }
+            else if (m_currentlyHolding.gameObject.tag != "pickedupObj")
+            {
+                m_currentlyHolding.gameObject.tag = "pickedupObj";
+                if (m_currentlyHolding.GetComponent<Rigidbody>())
+                    Destroy(m_currentlyHolding.GetComponent<Rigidbody>());
+
                 m_animationController.PlayPickup(); // will trigger attach and next state
                 m_actionQueue.Enqueue(MonsterAction.HoldWaitForInput);
                 m_inputWaitTimer = m_inputWaitTime;
                 Debug.Log("Picked up " + m_currentlyHolding.name + "successfully");
             }
             if (m_pickupDone)
+            {
+                m_pickupDone = false;
                 return true; // wait for animation here
+            }
             else
                 return false;
 		}
@@ -179,12 +246,36 @@ public class MonsterBehaviour : MonoBehaviour
 
     public void AttachCurrentlyHoldingToHand()
     {
+        Debug.Log("Attaching..");
+        if (m_currentlyHolding)
+        {
+            VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
+            if (controller)
+            {
+                Debug.Log("Attaching villager");
+                if (controller.IsPickedUp())
+                {
+                    Debug.Log("Works, it is in picked up state");
+                    controller.transform.parent = m_attachHand.transform;
+                    controller.transform.up = Vector3.up;
+                    controller.transform.localPosition = Vector3.zero;
+                }
+            }
+            else if (m_currentlyHolding.gameObject.tag == "pickedupObj")
+            {
+                m_currentlyHolding.transform.parent = m_attachHand.transform;
+                m_currentlyHolding.transform.up = Vector3.up;
+                m_currentlyHolding.transform.localPosition = Vector3.zero;
+            }
+        }
+    }
+
+    public void KillCurrentlyHoldingToHand()
+    {
         VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
         if (controller.IsPickedUp())
         {
-            controller.transform.parent = m_attachHand.transform;
-            controller.transform.up = Vector3.up;
-            controller.transform.localPosition = Vector3.zero;
+            controller.Die();
         }
     }
 
@@ -193,16 +284,20 @@ public class MonsterBehaviour : MonoBehaviour
 	{
 		if (m_currentlyHolding)
 		{
+            if (!m_isHoldingState) m_animationController.PlayHold();
+            m_isHoldingState = true;
 			m_inputWaitTimer -= Time.deltaTime;
             Debug.Log("Is waiting...("+m_inputWaitTimer+")");
 			if (m_inputWaitTimer < 0.0f)
 			{
 				DecideNextActionFrom(MonsterAction.HoldWaitForInput);
+                m_isHoldingState = false;
 				return true;
 			}
 		}
 		else
 		{
+            m_isHoldingState = false;
 			return true;
 		}
 		return false;
@@ -227,12 +322,11 @@ public class MonsterBehaviour : MonoBehaviour
 					target = currentMarker.GetTarget().position;
 					m_mover.SetTarget(currentMarker.GetTarget());
 				}
-                m_rootMotionControllerSpd = Mathf.Clamp(Vector3.Magnitude(transform.position - target) * 0.08f,0.5f,2.3f);
-				if (Vector3.SqrMagnitude(transform.position - target) < 1.0f)
+                m_rootMotionControllerSpd = Mathf.Clamp(Vector3.Magnitude(transform.position - target) * 0.09f,0.8f,2.0f);
+				if (Vector3.Magnitude(transform.position - target) < 4.0f)
 				{
-					m_currentlyHolding = currentMarker.GetTarget();
-					currentMarker.Deactivate();
-					if (m_currentlyHolding)
+                    if (!m_currentlyHolding && currentMarker.HasTarget()) m_currentlyHolding = currentMarker.GetTarget();
+					if (currentMarker.HasTarget() && m_currentlyHolding)
 					{
 						m_actionQueue.Enqueue(MonsterAction.Pickup);
                         m_pickupDone = false;
@@ -244,6 +338,7 @@ public class MonsterBehaviour : MonoBehaviour
                         m_mover.m_loiter = true;
                         m_mover.m_dir = Vector3.zero;
                     }
+                    currentMarker.Deactivate();
 					shouldDequeue = true;
 				}
 				m_mover.m_enabled = true;
@@ -260,15 +355,33 @@ public class MonsterBehaviour : MonoBehaviour
 
 	public void SetNewWalkTarget()
 	{
-		m_actionQueue.Clear(); // will also remove input wait
-		if (m_currentlyHolding != null)
-		{
-			// throw or set down?
-			// Need instant decision
-			DecideNextActionFrom(MonsterBehaviour.MonsterAction.HoldWaitForInput);
-		}
-		// Then walk
-		m_actionQueue.Enqueue(MonsterBehaviour.MonsterAction.Walk);
+        Reset();
+        if (Marker.s_current.HasTarget())
+        {
+            // if walking to new target
+            if (m_currentlyHolding != null)
+            {
+                // throw or set down?
+                // Need instant decision
+                DecideNextActionFrom(MonsterBehaviour.MonsterAction.HoldWaitForInput);
+            }
+            // Then walk
+            m_actionQueue.Enqueue(MonsterBehaviour.MonsterAction.Walk);
+        }
+        else
+        {
+            // if just walking
+            // First walk
+            m_actionQueue.Enqueue(MonsterBehaviour.MonsterAction.Walk);
+            Debug.Log("walk just");
+            if (m_currentlyHolding != null)
+            {
+                Debug.Log("still has object, must wait later");
+                // add new wait action
+                m_inputWaitTimer = m_inputWaitTime;
+                m_actionQueue.Enqueue(MonsterBehaviour.MonsterAction.HoldWaitForInput);
+            }
+        }
 	}
 
 	void DecideNextActionFrom(MonsterAction p_currentAction)
@@ -340,7 +453,7 @@ public class MonsterBehaviour : MonoBehaviour
 		holdAndWaitNode.m_children.Add(putdownNode);
 		holdAndWaitNode.m_weigths.Add(0.333f);
 
-        //holdAndWaitNode.AddWeigth(0.5f, 2); Make nicer for put down
+        holdAndWaitNode.AddWeigth(0.5f, 2); // Make nicer for put down
 
 		ActionTreeNode pickupNode = new ActionTreeNode();
 		pickupNode.m_actionType = MonsterAction.Pickup;

@@ -124,7 +124,7 @@ MonoBehaviour:
   m_lockToGround: 1
   m_ignoreLayer:
     serializedVersion: 2
-    m_Bits: 1296
+    m_Bits: 3344
   m_enabled: 1
 --- !u!114 &11404984
 MonoBehaviour:
@@ -184,6 +184,7 @@ MonoBehaviour:
   m_waterAvoidTime: 1
   m_loiter: 1
   m_enabled: 1
+  m_rootMotionController: {fileID: 0}
 --- !u!135 &13563616
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -21,6 +21,8 @@ public class MonsterAnimationController : MonoBehaviour
         m_animator.SetFloat("ani_walk_speed", m_mbehaviour.m_rootMotionControllerSpd);
 	}
 
+
+    // Pickup
     public void PlayPickup()
     {
         Debug.Log("PlayPickup!");
@@ -38,6 +40,46 @@ public class MonsterAnimationController : MonoBehaviour
         Debug.Log("Attach!");
         m_mbehaviour.AttachCurrentlyHoldingToHand();
     }
+
+
+    // Hold
+    public void PlayHold()
+    {
+        Debug.Log("PlayHold!");
+        m_animator.SetTrigger("monster_hold");
+    }
+
+
+    // Eat
+
+    public void PlayEat()
+    {
+        Debug.Log("PlayEat!");
+        m_animator.SetTrigger("monster_eat");
+    }
+
+    public void EventEatDone()
+    {
+        Debug.Log("EatDone!");
+        m_mbehaviour.m_eatDone = true;
+    }
+
+    public void EventKillPickupTarget()
+    {
+        Debug.Log("eatup kill!");
+        m_mbehaviour.KillCurrentlyHoldingToHand();
+    }
+
+
+
+    // Throw
+
+
+
+
+
+
+
 
     public void ResetAnimState()
     {

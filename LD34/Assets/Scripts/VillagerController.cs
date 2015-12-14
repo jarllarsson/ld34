@@ -94,7 +94,7 @@ public class VillagerController : MonoBehaviour
         m_animator.SetInteger("villager_age", m_age);
     }
 
-    private void Die()
+    public void Die()
     {
         Destroy(gameObject);
     }
@@ -117,6 +117,6 @@ public class VillagerController : MonoBehaviour
         if (m_mover) m_mover.m_enabled = true;
         LandCollider collider = GetComponent<LandCollider>();
         if (collider) collider.m_enabled = true;
-        isPickedUp = true;
+        isPickedUp = false;
     }
 }
