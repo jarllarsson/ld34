@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 4412454aa4937d342a9261d18bd9d628
-timeCreated: 1450125181
+timeCreated: 1450128240
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -88,7 +88,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
@@ -180,7 +180,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Eat
       takeName: Eat
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 53
       wrapMode: 0
       orientationOffsetY: 0
@@ -262,7 +262,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Happy
       takeName: Happy
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 49
       wrapMode: 0
       orientationOffsetY: 0
@@ -344,7 +344,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Hold
       takeName: Hold
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
@@ -426,7 +426,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Idle
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
@@ -434,7 +434,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -508,7 +508,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Pickup
       takeName: Pickup
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 49
       wrapMode: 0
       orientationOffsetY: 0
@@ -590,7 +590,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Putdown
       takeName: Putdown
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 48
       wrapMode: 0
       orientationOffsetY: 0
@@ -672,7 +672,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Sad
       takeName: Sad
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 69
       wrapMode: 0
       orientationOffsetY: 0
@@ -836,7 +836,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Throw
       takeName: Throw
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
@@ -918,7 +918,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk
       takeName: Walk
-      firstFrame: 0
+      firstFrame: -1
       lastFrame: 39
       wrapMode: 0
       orientationOffsetY: 0
@@ -926,7 +926,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       loopTime: 1
-      loopBlend: 0
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

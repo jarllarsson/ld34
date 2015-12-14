@@ -11,6 +11,7 @@ public class Mover : MonoBehaviour {
     private float m_waterAvoidTimer = 0.0f;
     public bool m_loiter = false;
     public bool m_enabled = false;
+    public RootMotionController m_rootMotionController = null;
 	// Use this for initialization
 	void Start () {
 	
@@ -32,7 +33,12 @@ public class Mover : MonoBehaviour {
                     m_dir = Vector2.zero;
                 }
             }
-            Move();
+            if (m_dir.sqrMagnitude > 0)
+            {
+                Move();
+            }
+            
+
             Debug.DrawLine(transform.position, transform.position + new Vector3(m_dir.x, 0.0f, m_dir.y)*10.0f, Color.magenta);
 
             if (m_waterAvoidTimer > 0.0f) m_waterAvoidTimer -= Time.deltaTime;
@@ -46,7 +52,12 @@ public class Mover : MonoBehaviour {
 
     private void Move()
     {
-        transform.position += new Vector3(m_dir.x, 0.0f, m_dir.y) * Time.deltaTime * m_speed;
+        if (!m_rootMotionController)
+            transform.position += new Vector3(m_dir.x, 0.0f, m_dir.y) * Time.deltaTime * m_speed;
+        else
+        {
+            transform.position += m_rootMotionController.m_deltaTotal;
+        }
     }
 
     public void SetTarget(Vector3 p_pos)

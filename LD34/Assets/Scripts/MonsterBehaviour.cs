@@ -52,6 +52,9 @@ public class MonsterBehaviour : MonoBehaviour
 	private float m_inputWaitTimer = 0.0f;
 	private Transform m_currentlyHolding;
 
+    public float m_rootMotionControllerSpd = 1.0f;
+    public Transform m_attachHand;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -62,6 +65,7 @@ public class MonsterBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+        m_rootMotionControllerSpd = 1.0f;
 		if (m_actionQueue.Count > 0)
 		{
 			MonsterAction currentAction = m_actionQueue.Peek();
@@ -203,6 +207,7 @@ public class MonsterBehaviour : MonoBehaviour
 					target = currentMarker.GetTarget().position;
 					m_mover.SetTarget(currentMarker.GetTarget());
 				}
+                m_rootMotionControllerSpd = Mathf.Clamp(Vector3.Magnitude(transform.position - target) * 0.08f,0.5f,2.3f);
 				if (Vector3.SqrMagnitude(transform.position - target) < 1.0f)
 				{
 					m_currentlyHolding = currentMarker.GetTarget();
