@@ -6,12 +6,67 @@ ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Armature
+    100004: belly
+    100006: chest
+    100008: Cube
+    100010: foot_l
+    100012: foot_r
+    100014: hand_l
+    100016: hand_r
+    100018: head
+    100020: hip_l
+    100022: hip_r
+    100024: larm_l
+    100026: larm_r
+    100028: lleg_l
+    100030: lleg_r
+    100032: lowerjaw
+    100034: mouth_l
+    100036: mouth_r
+    100038: neck
+    100040: root
+    100042: shoulder_l
+    100044: shoulder_r
+    100046: uarm_l
+    100048: uarm_r
+    100050: uleg_l
+    100052: uleg_r
+    100054: upperjaw
     400000: //RootNode
+    400002: Armature
+    400004: belly
+    400006: chest
+    400008: Cube
+    400010: foot_l
+    400012: foot_r
+    400014: hand_l
+    400016: hand_r
+    400018: head
+    400020: hip_l
+    400022: hip_r
+    400024: larm_l
+    400026: larm_r
+    400028: lleg_l
+    400030: lleg_r
+    400032: lowerjaw
+    400034: mouth_l
+    400036: mouth_r
+    400038: neck
+    400040: root
+    400042: shoulder_l
+    400044: shoulder_r
+    400046: uarm_l
+    400048: uarm_r
+    400050: uleg_l
+    400052: uleg_r
+    400054: upperjaw
     2300000: //RootNode
     3300000: //RootNode
     4300000: Cube
     7400000: Default Take
     9500000: //RootNode
+    13700000: Cube
   materials:
     importMaterials: 1
     materialName: 0
