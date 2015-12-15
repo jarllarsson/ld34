@@ -12,6 +12,7 @@ GameObject:
   - 23: {fileID: 2360766}
   - 95: {fileID: 9561512}
   - 65: {fileID: 6563572}
+  - 114: {fileID: 11431002}
   m_Layer: 11
   m_Name: house
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 196990}
   m_LocalRotation: {x: -.707106829, y: 0, z: -0, w: .707106829}
-  m_LocalPosition: {x: 300.850006, y: 50.0091515, z: 173.220001}
+  m_LocalPosition: {x: 296.660004, y: 50.0091515, z: 164.210007}
   m_LocalScale: {x: 1.54666996, y: 1.54666924, z: 1.54666924}
   m_Children: []
   m_Father: {fileID: 0}
@@ -93,6 +94,19 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11431002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 196990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1018c1d5c3e995648845ccd405038c9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_villager: {fileID: 474174, guid: 544651a1eb54e7841bd6e86d847eb32a, type: 2}
+  m_spawnNow: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

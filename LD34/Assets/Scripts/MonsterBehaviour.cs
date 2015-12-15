@@ -40,6 +40,17 @@ public class MonsterBehaviour : MonoBehaviour
 						m_weigths[i] = Mathf.Clamp01(m_weigths[i]);
 					}
 				}
+
+                float tot = 0.0f;
+                for (int i = 0; i < m_weigths.Count; i++)
+                {
+                    tot+=m_weigths[i];
+                }
+                for (int i = 0; i < m_weigths.Count; i++)
+                {
+                    m_weigths[i]/=tot;
+                }
+
 			}
 
             string actions = "Result: ";
@@ -76,8 +87,11 @@ public class MonsterBehaviour : MonoBehaviour
     private Vector3 m_interactUIPos;
     public float m_interactMeter = 0.0f;
     private bool m_isInteracting = false;
+    private float m_autoDoTimerLim = 10.0f;
+    private float m_autoDoTimer = 0.0f;
 
     ActionTreeNode m_holdAndWaitNode;
+    private Transform m_ownTarget = null;
 
 	// Use this for initialization
 	void Start () 
@@ -117,6 +131,37 @@ public class MonsterBehaviour : MonoBehaviour
 				    case MonsterAction.Walk:
 					    {
 						    dequeue = WalkAction();
+                            m_autoDoTimer += Time.deltaTime;
+                            if (!m_ownTarget && m_mover.m_loiter && m_autoDoTimer > m_autoDoTimerLim)
+                            {
+                                Debug.Log("Auto");
+                                bool autoDo = false;
+                                m_autoDoTimer = 0.0f;
+                                foreach(float w in m_holdAndWaitNode.m_weigths)
+                                {
+                                    if (w>0.7f)
+                                    {
+                                        autoDo = true;
+                                        break;
+                                    }
+                                }
+
+                                if (autoDo)
+                                {
+                                    Debug.Log("Try Auto");
+                                    GameObject[] people = GameObject.FindGameObjectsWithTag("Person");
+                                    foreach (GameObject p in people)
+                                    {
+                                        if (Vector3.Magnitude(p.transform.position-transform.position)<20.0f)
+                                        {
+                                            Debug.Log("Auto found!");
+                                            m_ownTarget = p.transform;
+                                            SetNewWalkTarget();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
 						    break;
 					    }
 				    case MonsterAction.Pickup:
@@ -163,6 +208,7 @@ public class MonsterBehaviour : MonoBehaviour
 		    else
 		    {
                 Reset();
+                m_ownTarget = null;
 			    m_actionQueue.Enqueue(MonsterAction.Walk);
 		    }
 		}
@@ -188,6 +234,7 @@ public class MonsterBehaviour : MonoBehaviour
                 if (currentAction != MonsterAction.HoldWaitForInput)
                 {
                     Reset();
+                    m_ownTarget = null;
                     m_animationController.ResetAnimState();
                 }
             }
@@ -300,13 +347,14 @@ public class MonsterBehaviour : MonoBehaviour
             if (controller)
             {
                 controller.transform.parent = null;
+                controller.transform.up = Vector3.up;
                 controller.PutDown();
             }
             else if (m_currentlyHolding.tag == "pickedupObj")
             {
                 m_currentlyHolding.gameObject.tag = "debree";
                 m_currentlyHolding.transform.parent = null;
-                controller.transform.up = Vector3.up;
+                m_currentlyHolding.transform.up = Vector3.up;
                 if (!m_currentlyHolding.GetComponent<Rigidbody>())
                     m_currentlyHolding.gameObject.AddComponent<Rigidbody>();
                 else
@@ -464,12 +512,14 @@ public class MonsterBehaviour : MonoBehaviour
         if (m_currentlyHolding)
         {
             VillagerController controller = m_currentlyHolding.GetComponent<VillagerController>();
-            if (controller.IsPickedUp())
+            if (controller && controller.IsPickedUp())
             {
+                m_facing.localScale *= 1.1f;
                 controller.Die();
             }
             else if (m_currentlyHolding.gameObject.tag == "pickedupObj")
             {
+                m_facing.localScale *= 1.15f;
                 Destroy(m_currentlyHolding.gameObject);
             }
             m_currentlyHolding = null;
@@ -543,12 +593,18 @@ public class MonsterBehaviour : MonoBehaviour
 	{
 		Marker currentMarker = Marker.s_current;
 		bool shouldDequeue = false;
-		if (currentMarker)
+        if (currentMarker)
 		{
-			if (currentMarker.IsActive())
+            if (currentMarker.IsActive() || m_ownTarget)
 			{
 				Vector3 target = Vector3.zero;
-				if (currentMarker.HasPosition())
+                Debug.Log("Own " + m_ownTarget);
+                if (m_ownTarget && !currentMarker.IsActive())
+                {
+                    target = m_ownTarget.position;
+                    m_mover.SetTarget(m_ownTarget);
+                }
+				else if (currentMarker.HasPosition())
 				{
 					target = currentMarker.GetPosition();
 					m_mover.SetTarget(currentMarker.GetPosition());
@@ -561,8 +617,18 @@ public class MonsterBehaviour : MonoBehaviour
                 m_rootMotionControllerSpd = Mathf.Clamp(Vector3.Magnitude(transform.position - target) * 0.09f,0.8f,2.0f);
 				if (Vector3.Magnitude(transform.position - target) < 4.0f)
 				{
-                    if (!m_currentlyHolding && currentMarker.HasTarget()) m_currentlyHolding = currentMarker.GetTarget();
-					if (currentMarker.HasTarget() && m_currentlyHolding)
+                    if (!m_ownTarget)
+                    {
+                        if (!m_currentlyHolding && currentMarker.HasTarget())
+                            m_currentlyHolding = currentMarker.GetTarget();
+                    }
+                    else
+                    {
+                        if (!m_currentlyHolding && m_ownTarget)
+                            m_currentlyHolding = m_ownTarget;
+                    }
+
+                    if ((currentMarker.HasTarget() || m_ownTarget) && m_currentlyHolding)
 					{
 						m_actionQueue.Enqueue(MonsterAction.Pickup);
                         m_pickupDone = false;
@@ -575,6 +641,7 @@ public class MonsterBehaviour : MonoBehaviour
                         m_mover.m_dir = Vector3.zero;
                     }
                     currentMarker.Deactivate();
+                    m_ownTarget = null;
 					shouldDequeue = true;
 				}
 				m_mover.m_enabled = true;
@@ -592,8 +659,9 @@ public class MonsterBehaviour : MonoBehaviour
 	public void SetNewWalkTarget()
 	{
         Reset();
-        if (Marker.s_current.HasTarget())
+        if (Marker.s_current.HasTarget() || m_ownTarget)
         {
+            Debug.Log("new target");
             // if walking to new target
             if (m_currentlyHolding != null)
             {

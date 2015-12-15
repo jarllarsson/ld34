@@ -9,6 +9,7 @@ TagManager:
   - Water
   - pickedupObj
   - debree
+  - Person
   layers:
   - Default
   - TransparentFX

@@ -48,7 +48,7 @@ GameObject:
   - 135: {fileID: 13563616}
   m_Layer: 8
   m_Name: Person
-  m_TagString: Untagged
+  m_TagString: Person
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -163,6 +163,13 @@ MonoBehaviour:
   m_sex: 0
   m_age: 1
   m_billboard: {fileID: 469690}
+  m_house: {fileID: 475674, guid: 45c714f1a0f4ef341926f5f01c471130, type: 2}
+  m_houseMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_terrainMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &11474648
 MonoBehaviour:
   m_ObjectHideFlags: 1
