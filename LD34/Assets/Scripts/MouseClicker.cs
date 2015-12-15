@@ -4,6 +4,7 @@ using System.Collections;
 public class MouseClicker : MonoBehaviour 
 {
     public CamMover m_camMover;
+    public MonsterBehaviour m_monster;
 	// Use this for initialization
 	void Start () {
 	
@@ -26,25 +27,29 @@ public class MouseClicker : MonoBehaviour
                         case "Terrain":
                         {
                             print("Hit terrain at " + rayHit.point);
-                            currentMarker.Activate(rayHit.point);
+                            if (m_monster.DisableInteract())
+                                currentMarker.Activate(rayHit.point);
                         }
                         break;
                         case "Water":
                         {
                             print("Hit water");
-                            currentMarker.Deactivate();
+                            if (m_monster.DisableInteract())
+                                currentMarker.Deactivate();
                         }
                         break;
                         case "Monster":
                         {
                             print("Hit monster");
                             currentMarker.Deactivate();
+                            m_monster.SetInteract();
                         }
                         break;
                         default:
                         {
                             print("Hit " + rayHit.transform.name);
-                            currentMarker.Activate(rayHit.transform);
+                            if (m_monster.DisableInteract())
+                                currentMarker.Activate(rayHit.transform);
                         }
                         break;
                     }

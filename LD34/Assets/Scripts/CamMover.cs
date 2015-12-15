@@ -12,6 +12,7 @@ public class CamMover : MonoBehaviour
     private float m_dragStatCoolDown = 0.2f;
     private float m_dragStatCoolDownTick = 0.0f;
     public Camera m_camera;
+    public MonsterBehaviour m_monster;
 
 
 	// Use this for initialization
@@ -22,7 +23,13 @@ public class CamMover : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        InputHandling();
+        if (!m_monster.m_interact)
+            InputHandling();
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, m_monster.m_cameraInteractTarget.position, 5.0f*Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, m_monster.m_cameraInteractTarget.rotation, 5.0f * Time.deltaTime);
+        }
 
         if (transform.position.y > 98.0f)
         {

@@ -29,6 +29,7 @@ public class VillagerController : MonoBehaviour
 	void Start () 
     {
         m_sex = Random.Range(0, 2) == 0 ? Sex.MAN : Sex.WOMAN;
+        if (m_age == 1) m_ager = s_adultAgeSeconds;
         m_animator.SetInteger("villager_sex", (int)m_sex);
         updateAnimAge();
         m_dieAgeSeconds += Random.Range(-400.0f, 200.0f);

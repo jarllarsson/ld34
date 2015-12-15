@@ -23,6 +23,7 @@ public class MonsterBehaviour : MonoBehaviour
 		public List<float> m_weigths = new List<float>();
 		public void AddWeigth(float p_w, int p_child)
 		{
+            Debug.Log("Add weight " + p_w);
 			float old = m_weigths[p_child];
 			m_weigths[p_child] += p_w;
 			m_weigths[p_child] = Mathf.Clamp01(m_weigths[p_child]);
@@ -40,6 +41,13 @@ public class MonsterBehaviour : MonoBehaviour
 					}
 				}
 			}
+
+            string actions = "Result: ";
+            for (int i = 0; i < m_weigths.Count; i++)
+            {
+                actions += "(" + m_children[i].m_actionType.ToString() + " " + m_weigths[i] + ")  ";
+            }
+            Debug.Log(actions);
 
 		}
 	}
@@ -62,11 +70,22 @@ public class MonsterBehaviour : MonoBehaviour
     private bool m_holdEndAnimStarted = false;
     private bool m_isHoldingState = false;
 
+    public bool m_interact = false;
+    public Transform m_cameraInteractTarget;
+    public Transform m_interactUI;
+    private Vector3 m_interactUIPos;
+    public float m_interactMeter = 0.0f;
+    private bool m_isInteracting = false;
+
+    ActionTreeNode m_holdAndWaitNode;
+
 	// Use this for initialization
 	void Start () 
 	{
 		m_actionQueue.Enqueue(MonsterAction.Walk);
 		SetupDecisionTree();
+        m_interactUIPos = m_interactUI.position;
+        m_interactUI.position = new Vector3(0.0f, -9999.0f, 0.0f);
 	}
 	
     void Reset()
@@ -81,70 +100,163 @@ public class MonsterBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        m_rootMotionControllerSpd = 1.0f;
-		if (m_actionQueue.Count > 0)
-		{
-			MonsterAction currentAction = m_actionQueue.Peek();
-			bool dequeue = false;
+        m_isInteracting = false;
+        if (!m_interact)
+        {
+            m_rootMotionControllerSpd = 1.0f;
+		    if (m_actionQueue.Count > 0)
+		    {
+			    MonsterAction currentAction = m_actionQueue.Peek();
+			    bool dequeue = false;
 
-			m_mover.m_enabled = false;
-
-
-			switch (currentAction)
-			{
-				case MonsterAction.Walk:
-					{
-						dequeue = WalkAction();
-						break;
-					}
-				case MonsterAction.Pickup:
-					{
-						dequeue = PickupAction();
-						break;
-					}
-				case MonsterAction.HoldWaitForInput:
-					{
-						dequeue = HoldAndWait();
-						break;
-					}
-				case MonsterAction.Eat:
-					{
-                        dequeue = EatAction();
-						break;
-					}
-				case MonsterAction.Throw:
-					{
-                        dequeue = ThrowAction();
-						break;
-					}
-				case MonsterAction.PutDown:
-					{
-                        dequeue = PutdownAction();
-						break;
-					}
-			}
+			    m_mover.m_enabled = false;
 
 
+			    switch (currentAction)
+			    {
+				    case MonsterAction.Walk:
+					    {
+						    dequeue = WalkAction();
+						    break;
+					    }
+				    case MonsterAction.Pickup:
+					    {
+						    dequeue = PickupAction();
+						    break;
+					    }
+				    case MonsterAction.HoldWaitForInput:
+					    {
+						    dequeue = HoldAndWait();
+						    break;
+					    }
+				    case MonsterAction.Eat:
+					    {
+                            dequeue = EatAction();
+						    break;
+					    }
+				    case MonsterAction.Throw:
+					    {
+                            dequeue = ThrowAction();
+						    break;
+					    }
+				    case MonsterAction.PutDown:
+					    {
+                            dequeue = PutdownAction();
+						    break;
+					    }
+			    }
 
-			if (dequeue)
-			{
-				m_actionQueue.Dequeue();
-			}
 
-			MonsterAction[] dbgList = m_actionQueue.ToArray();
-			m_dbgTextbox.text = "";
-			for (int i = 0; i < dbgList.Length; i++)
-			{
-				m_dbgTextbox.text += (i + " " + dbgList[i].ToString()+"\n");
-			}
+
+			    if (dequeue)
+			    {
+				    m_actionQueue.Dequeue();
+			    }
+
+			    MonsterAction[] dbgList = m_actionQueue.ToArray();
+			    m_dbgTextbox.text = "";
+			    for (int i = 0; i < dbgList.Length; i++)
+			    {
+				    m_dbgTextbox.text += (i + " " + dbgList[i].ToString()+"\n");
+			    }
+		    }
+		    else
+		    {
+                Reset();
+			    m_actionQueue.Enqueue(MonsterAction.Walk);
+		    }
 		}
-		else
-		{
-            Reset();
-			m_actionQueue.Enqueue(MonsterAction.Walk);
-		}
+        else
+        {
+            m_mover.m_enabled = false;
+        }
 
 	}
+
+    public void SetInteract()
+    {
+        Debug.Log("Interact");
+        if (!m_interact)
+        {
+            m_interact = true;
+            m_mover.m_enabled = false;
+            m_interactUI.position = m_interactUIPos;
+            m_interactMeter = 0.0f;
+            if (m_actionQueue.Count > 0)
+            {
+                MonsterAction currentAction = m_actionQueue.Peek();
+                if (currentAction != MonsterAction.HoldWaitForInput)
+                {
+                    Reset();
+                    m_animationController.ResetAnimState();
+                }
+            }
+        }
+    }
+
+    public bool DisableInteract()
+    {
+        if (m_interact)
+        {
+            if (!m_isInteracting)
+            {
+                Debug.Log("No Interact");
+                m_interact = false;
+                m_mover.m_enabled = true;
+                m_interactUI.position = new Vector3(0.0f, -9999.0f, 0.0f);
+
+                Debug.Log("1");
+                if (m_actionQueue.Count > 0)
+                {
+                    Debug.Log("2");
+                    MonsterAction currentAction = m_actionQueue.Peek();
+                    if (currentAction == MonsterAction.HoldWaitForInput)
+                    {
+                        Debug.Log("3");
+                        if (m_interactMeter > 0.0f)
+                            m_holdAndWaitNode.AddWeigth(m_interactMeter, Random.Range(0, 2)); // Make nicer for throw/eat
+                        else
+                            m_holdAndWaitNode.AddWeigth(-m_interactMeter, 2); // Make nicer for put down
+                        return false; // don't receive new input if deciding
+                    }
+                    else
+                    {
+                        // other states handled here
+                    }
+                }
+
+
+                return true;
+            }
+            else
+            {
+                Debug.Log("Can't disable, hit button first");
+                return false; // prio buttons
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public void ButtonAddPositive()
+    {
+        m_interactMeter += 0.2f;
+        m_interactMeter = Mathf.Clamp(m_interactMeter, -1.0f, 1.0f);
+    }
+
+    public void ButtonNegative()
+    {
+        m_interactMeter -= 0.2f;
+        m_interactMeter = Mathf.Clamp(m_interactMeter, -1.0f, 1.0f);
+    }
+
+    public void ButtonInteract()
+    {
+        Debug.Log("btn");
+        m_isInteracting = true;
+    }
 
     bool PutdownAction()
     {
@@ -372,14 +484,15 @@ public class MonsterBehaviour : MonoBehaviour
             if (controller)
             {
                 controller.transform.parent = null;
+                controller.transform.up = Vector3.up;
                 controller.Thrown();
             }
             else if (m_currentlyHolding.tag == "pickedupObj")
             {
                 m_currentlyHolding.gameObject.tag = "debree";
+                m_currentlyHolding.transform.up = Vector3.up;
                 m_currentlyHolding.transform.parent = null;
             }
-            controller.transform.up = Vector3.up;
 
             Rigidbody rb = m_currentlyHolding.GetComponent<Rigidbody>();
             if (!rb)
@@ -577,7 +690,9 @@ public class MonsterBehaviour : MonoBehaviour
 		holdAndWaitNode.m_children.Add(putdownNode);
 		holdAndWaitNode.m_weigths.Add(0.333f);
 
-        holdAndWaitNode.AddWeigth(0.5f, 1); // Make nicer for put down
+        m_holdAndWaitNode = holdAndWaitNode;
+
+        //holdAndWaitNode.AddWeigth(0.5f, 1); // Make nicer for put down
 
 		ActionTreeNode pickupNode = new ActionTreeNode();
 		pickupNode.m_actionType = MonsterAction.Pickup;
