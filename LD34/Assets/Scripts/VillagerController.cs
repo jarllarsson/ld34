@@ -20,6 +20,8 @@ public class VillagerController : MonoBehaviour
     private Mover m_mover;
     private bool m_isWalkingAnim = false;
     public Transform m_billboard;
+    private bool m_isThrown = false;
+    private Rigidbody m_opRb = null;
 
     private bool isPickedUp = false;
 
@@ -48,41 +50,63 @@ public class VillagerController : MonoBehaviour
             m_age++;
             updateAnimAge();
         }
-        if (m_ager >= m_dieAgeSeconds)
-        {
-            Die();
-        }
 
-        // animation for walk
-        bool isWalking = m_mover.m_dir.SqrMagnitude() > 0.0f;
-        if (isWalking)
+        if (!m_isThrown)
         {
-            if (!m_isWalkingAnim)
+            if (m_ager >= m_dieAgeSeconds)
             {
-                m_animator.SetBool("villager_walk", true);
-                m_isWalkingAnim = true;
+                Die();
             }
-            // facing
-            if (m_billboard)
+
+            // animation for walk
+            bool isWalking = m_mover.m_dir.SqrMagnitude() > 0.0f;
+            if (isWalking)
             {
-                Vector3 lDir = m_billboard.InverseTransformDirection(new Vector3(m_mover.m_dir.x, 0.0f, m_mover.m_dir.y));
-                Debug.DrawLine(transform.position, transform.position + lDir, Color.blue);
-                if (lDir.x < 0.0f )
+                if (!m_isWalkingAnim)
                 {
-                    m_billboard.localScale = Vector3.one;
+                    m_animator.SetBool("villager_walk", true);
+                    m_isWalkingAnim = true;
                 }
-                else if (lDir.x > 0.0f)
+                // facing
+                if (m_billboard)
                 {
-                    m_billboard.localScale = new Vector3(-1.0f,1.0f,1.0f);
+                    Vector3 lDir = m_billboard.InverseTransformDirection(new Vector3(m_mover.m_dir.x, 0.0f, m_mover.m_dir.y));
+                    Debug.DrawLine(transform.position, transform.position + lDir, Color.blue);
+                    if (lDir.x < 0.0f)
+                    {
+                        m_billboard.localScale = Vector3.one;
+                    }
+                    else if (lDir.x > 0.0f)
+                    {
+                        m_billboard.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                    }
+                }
+            }
+            else
+            {
+                if (m_isWalkingAnim)
+                {
+                    m_animator.SetBool("villager_walk", false);
+                    m_isWalkingAnim = false;
                 }
             }
         }
         else
         {
-            if (m_isWalkingAnim)
+            if (m_opRb)
             {
-                m_animator.SetBool("villager_walk", false);
-                m_isWalkingAnim = false;
+                if (m_opRb.IsSleeping() || m_opRb.velocity.magnitude < 0.3f)
+                {
+                    Debug.Log("GetUp!");
+                    Destroy(m_opRb);
+                    m_isThrown = false;
+                    PutDown();
+                    gameObject.tag = "Untagged";
+                }
+            }
+            else
+            {
+                m_opRb = GetComponent<Rigidbody>();
             }
         }
 
@@ -105,6 +129,12 @@ public class VillagerController : MonoBehaviour
         LandCollider collider = GetComponent<LandCollider>();
         if (collider) collider.m_enabled = false;
         isPickedUp = true;
+    }
+    public void Thrown()
+    {
+        m_isThrown = true;
+        m_opRb = GetComponent<Rigidbody>();
+        PickedUp();
     }
 
     public bool IsPickedUp()

@@ -1669,13 +1669,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mover: {fileID: 938431063}
   m_dbgTextbox: {fileID: 2127385194}
-  m_inputWaitTime: 4
+  m_inputWaitTime: 2
   m_animationController: {fileID: 1630684543}
+  m_facing: {fileID: 672311542}
   m_rootMotionControllerSpd: 1
   m_attachHand: {fileID: 718425760}
   m_pickupDone: 0
-  m_putDownDone: 0
-  m_eatDone: 0
+  m_holdEndAnimDone: 0
 --- !u!114 &938431063
 MonoBehaviour:
   m_ObjectHideFlags: 0

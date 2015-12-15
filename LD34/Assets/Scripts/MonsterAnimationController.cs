@@ -51,7 +51,6 @@ public class MonsterAnimationController : MonoBehaviour
 
 
     // Eat
-
     public void PlayEat()
     {
         Debug.Log("PlayEat!");
@@ -61,7 +60,7 @@ public class MonsterAnimationController : MonoBehaviour
     public void EventEatDone()
     {
         Debug.Log("EatDone!");
-        m_mbehaviour.m_eatDone = true;
+        m_mbehaviour.m_holdEndAnimDone = true;
     }
 
     public void EventKillPickupTarget()
@@ -70,9 +69,24 @@ public class MonsterAnimationController : MonoBehaviour
         m_mbehaviour.KillCurrentlyHoldingToHand();
     }
 
-
-
     // Throw
+    public void PlayThrow()
+    {
+        Debug.Log("PlayThrow!");
+        m_animator.SetTrigger("monster_throw");
+    }
+
+    public void EventThrowDone()
+    {
+        Debug.Log("ThrowDone!");
+        m_mbehaviour.m_holdEndAnimDone = true;
+    }
+
+    public void EventThrowPickupTarget()
+    {
+        Debug.Log("throw!");
+        m_mbehaviour.ThrowCurrentlyHoldingToHand();
+    }
 
 
     // Putdown
@@ -85,7 +99,7 @@ public class MonsterAnimationController : MonoBehaviour
     public void EventPutdownDone()
     {
         Debug.Log("PutdownDone!");
-        m_mbehaviour.m_putDownDone = true;
+        m_mbehaviour.m_holdEndAnimDone = true;
     }
 
     public void EventDetachPickupTarget()
