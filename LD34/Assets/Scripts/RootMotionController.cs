@@ -17,6 +17,6 @@ public class RootMotionController : MonoBehaviour
         {
             deltaTotal += part.m_currentDelta;
         }
-        m_deltaTotal = transform.TransformDirection(new Vector3(/*deltaTotal.x*/0.0f, 0.0f, deltaTotal.y));
+        m_deltaTotal = transform.TransformVector(new Vector3(/*deltaTotal.x*/0.0f, 0.0f, deltaTotal.y));
 	}
 }
