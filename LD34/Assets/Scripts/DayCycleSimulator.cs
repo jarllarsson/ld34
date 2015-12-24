@@ -6,7 +6,8 @@ public class DayCycleSimulator : MonoBehaviour
     public static System.DateTime s_dateTime = System.DateTime.Now;
     public float m_second = 60.0f; // 60s = 1 minute per second etc
     public bool m_realtime = false;
-    public Light m_sunLight;
+    public Light m_sunLight, m_moonLight;
+    public float m_sunLightMaxPow = 1.0f, m_moonLightMaxPow = 2.3f;
 
     public Color[] m_dayFogColor = new Color[2];
     public Color m_currentFogColor;
@@ -15,11 +16,13 @@ public class DayCycleSimulator : MonoBehaviour
     public Color m_currentLightColor;
 
     public Transform m_sun;
+    public Renderer m_nightStarsOverlay;
 
 	// Use this for initialization
 	void Start () 
     {
         if (!m_realtime) ResetTime();
+        m_nightStarsOverlay.material.SetColor("_TintColor", new Color(1.0f, 1.0f, 1.0f, 0.0f));
 	}
 	
 	// Update is called once per frame
@@ -35,6 +38,22 @@ public class DayCycleSimulator : MonoBehaviour
 
         float day24HFrac = Get24HFrac();
         m_sun.rotation = Quaternion.Euler(new Vector3(day24HFrac * 360.0f, 0.0f, 0.0f));
+
+        if (day24HFrac > 0.25f && day24HFrac < 0.75f) //day
+        {
+            float t = day24HFrac - 0.25f;
+            t *= 2.0f;
+            m_sunLight.intensity = m_sunLightMaxPow * Mathf.Lerp(0.0f,1.0f,Mathf.Sin(Mathf.PI*t));
+        }
+        else //night
+        {
+            float t = day24HFrac - 0.75f;
+            if (day24HFrac <= 0.25f) t = day24HFrac + 0.25f;
+            t *= 2.0f;
+            t = Mathf.Sin(Mathf.PI * t);
+            m_nightStarsOverlay.material.SetColor("_TintColor", new Color(1.0f, 1.0f, 1.0f, t));
+            m_moonLight.intensity = m_moonLightMaxPow * Mathf.Lerp(0.0f, 1.0f, t);
+        }
 
         UpdateSkyColor();
 	}
