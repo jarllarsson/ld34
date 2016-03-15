@@ -27,14 +27,14 @@ public class MouseClicker : MonoBehaviour
                         case "Terrain":
                         {
                             print("Hit terrain at " + rayHit.point);
-                            if (m_monster.DisableInteract())
+                            if (!m_monster.IsInInteractMode())
                                 currentMarker.Activate(rayHit.point);
                         }
                         break;
                         case "Water":
                         {
                             print("Hit water");
-                            if (m_monster.DisableInteract())
+                            if (!m_monster.IsInInteractMode())
                                 currentMarker.Deactivate();
                         }
                         break;
@@ -42,13 +42,14 @@ public class MouseClicker : MonoBehaviour
                         {
                             print("Hit monster");
                             currentMarker.Deactivate();
-                            m_monster.SetInteract();
+                            if (!m_monster.IsInInteractMode() && m_monster.MonsterIsFreeForInput())
+                                m_monster.SetInteract();
                         }
                         break;
                         default:
                         {
                             print("Hit " + rayHit.transform.name);
-                            if (m_monster.DisableInteract())
+                            if (!m_monster.IsInInteractMode())
                                 currentMarker.Activate(rayHit.transform);
                         }
                         break;

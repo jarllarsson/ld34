@@ -86,9 +86,9 @@ public class MonsterBehaviour : MonoBehaviour
     public Transform m_interactUI;
     private Vector3 m_interactUIPos;
     public float m_interactMeter = 0.0f;
-    private bool m_isInteracting = false;
     private float m_autoDoTimerLim = 10.0f;
     private float m_autoDoTimer = 0.0f;
+    public bool m_waitForCamera = false;
 
     ActionTreeNode m_holdAndWaitNode;
     private Transform m_ownTarget = null;
@@ -114,7 +114,6 @@ public class MonsterBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        m_isInteracting = false;
         if (!m_interact)
         {
             m_rootMotionControllerSpd = 1.0f;
@@ -241,49 +240,49 @@ public class MonsterBehaviour : MonoBehaviour
         }
     }
 
-    public bool DisableInteract()
+    public bool IsInInteractMode()
     {
         if (m_interact)
         {
-            if (!m_isInteracting)
+//             if (!m_isInteracting)
+//             {
+//                 Debug.Log("No Interact");
+//                 m_interact = false;
+//                 m_mover.m_enabled = true;
+//                 m_interactUI.position = new Vector3(0.0f, -9999.0f, 0.0f);
+// 
+//                 Debug.Log("1");
+//                 if (m_actionQueue.Count > 0)
+//                 {
+//                     Debug.Log("2");
+//                     MonsterAction currentAction = m_actionQueue.Peek();
+//                     if (currentAction == MonsterAction.HoldWaitForInput)
+//                     {
+//                         Debug.Log("3");
+//                         if (m_interactMeter > 0.0f)
+//                             m_holdAndWaitNode.AddWeigth(m_interactMeter, Random.Range(0, 2)); // Make nicer for throw/eat
+//                         else
+//                             m_holdAndWaitNode.AddWeigth(-m_interactMeter, 2); // Make nicer for put down
+//                         return false; // don't receive new input if deciding
+//                     }
+//                     else
+//                     {
+//                         // other states handled here
+//                     }
+//                 }
+// 
+// 
+//                 return true;
+//             }
+//             else
             {
-                Debug.Log("No Interact");
-                m_interact = false;
-                m_mover.m_enabled = true;
-                m_interactUI.position = new Vector3(0.0f, -9999.0f, 0.0f);
-
-                Debug.Log("1");
-                if (m_actionQueue.Count > 0)
-                {
-                    Debug.Log("2");
-                    MonsterAction currentAction = m_actionQueue.Peek();
-                    if (currentAction == MonsterAction.HoldWaitForInput)
-                    {
-                        Debug.Log("3");
-                        if (m_interactMeter > 0.0f)
-                            m_holdAndWaitNode.AddWeigth(m_interactMeter, Random.Range(0, 2)); // Make nicer for throw/eat
-                        else
-                            m_holdAndWaitNode.AddWeigth(-m_interactMeter, 2); // Make nicer for put down
-                        return false; // don't receive new input if deciding
-                    }
-                    else
-                    {
-                        // other states handled here
-                    }
-                }
-
-
-                return true;
-            }
-            else
-            {
-                Debug.Log("Can't disable, hit button first");
-                return false; // prio buttons
+                Debug.Log("Can't disable, hit ok button first");
+                return true; // prio buttons
             }
         }
         else
         {
-            return true;
+            return false;
         }
     }
 
@@ -299,10 +298,53 @@ public class MonsterBehaviour : MonoBehaviour
         m_interactMeter = Mathf.Clamp(m_interactMeter, -1.0f, 1.0f);
     }
 
-    public void ButtonInteract()
+    public void ButtonDisableInteract()
     {
-        Debug.Log("btn");
-        m_isInteracting = true;
+        if (!m_waitForCamera)
+        {
+            m_interact = false;
+            m_mover.m_enabled = true;
+            m_interactUI.position = new Vector3(0.0f, -9999.0f, 0.0f);
+        }
+    }
+
+    public bool MonsterIsFreeForInput()
+    {
+        Debug.Log("1");
+        if (m_actionQueue.Count > 0)
+        {
+            Debug.Log("2");
+            MonsterAction currentAction = m_actionQueue.Peek();
+            if (currentAction == MonsterAction.HoldWaitForInput)
+            {
+                Debug.Log("3");
+                if (m_interactMeter > 0.0f)
+                    m_holdAndWaitNode.AddWeigth(m_interactMeter, Random.Range(0, 2)); // Make nicer for throw/eat
+                else
+                    m_holdAndWaitNode.AddWeigth(-m_interactMeter, 2); // Make nicer for put down
+                return true;
+            }
+            else if (currentAction == MonsterAction.Pickup || currentAction == MonsterAction.PutDown)
+            {
+                Debug.Log("can't click: pick up/put down");
+                return false; // don't receive input while picking up / putting down
+            }
+            else if (currentAction == MonsterAction.Throw)
+            {
+                Debug.Log("can't click: throw");
+                return false; // don't receive input while throwing
+            }
+            else if (currentAction == MonsterAction.Eat)
+            {
+                Debug.Log("can't click: eat");
+                return false; // don't receive input while eating
+            }
+            else
+            {
+                // other states handled here
+            }
+        }
+        return true;
     }
 
     bool PutdownAction()
@@ -573,7 +615,7 @@ public class MonsterBehaviour : MonoBehaviour
             if (!m_isHoldingState) m_animationController.PlayHold();
             m_isHoldingState = true;
 			m_inputWaitTimer -= Time.deltaTime;
-            Debug.Log("Is waiting...("+m_inputWaitTimer+")");
+            // Debug.Log("Is waiting...("+m_inputWaitTimer+")");
 			if (m_inputWaitTimer < 0.0f)
 			{
 				DecideNextActionFrom(MonsterAction.HoldWaitForInput);

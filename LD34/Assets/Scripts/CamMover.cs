@@ -13,6 +13,7 @@ public class CamMover : MonoBehaviour
     private float m_dragStatCoolDownTick = 0.0f;
     public Camera m_camera;
     public MonsterBehaviour m_monster;
+    public bool m_camMovingToTarget;
 
 
 	// Use this for initialization
@@ -23,12 +24,15 @@ public class CamMover : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+        m_camMovingToTarget = false;
         if (!m_monster.m_interact)
             InputHandling();
         else
         {
             transform.position = Vector3.Lerp(transform.position, m_monster.m_cameraInteractTarget.position, 5.0f*Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, m_monster.m_cameraInteractTarget.rotation, 5.0f * Time.deltaTime);
+            m_camMovingToTarget = Vector3.SqrMagnitude(transform.position - m_monster.m_cameraInteractTarget.position) > 0.1f;
+            m_camMovingToTarget = m_camMovingToTarget && Quaternion.Angle(transform.rotation, m_monster.m_cameraInteractTarget.rotation) > 0.1f;
         }
 
         if (transform.position.y > 98.0f)
@@ -39,6 +43,8 @@ public class CamMover : MonoBehaviour
         {
             m_camera.nearClipPlane = 1.0f;
         }
+
+        m_monster.m_waitForCamera = m_camMovingToTarget;
 	}
 
 

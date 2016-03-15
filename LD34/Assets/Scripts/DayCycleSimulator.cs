@@ -33,7 +33,7 @@ public class DayCycleSimulator : MonoBehaviour
         else
             s_dateTime = System.DateTime.Now;
 
-        Debug.Log(s_dateTime.ToLongTimeString());
+        // Debug.Log(s_dateTime.ToLongTimeString());
 
 
         float day24HFrac = Get24HFrac();
@@ -73,7 +73,7 @@ public class DayCycleSimulator : MonoBehaviour
 
             RenderSettings.fogColor = m_currentFogColor;
             RenderSettings.fogDensity = m_currentFogColor.a * 0.006f;
-            m_sunLight.color = m_currentLightColor;
+            if (m_sunLight) m_sunLight.color = m_currentLightColor;
             if (RenderSettings.skybox)
             {
                 RenderSettings.skybox.SetColor("_GroundColor", m_currentFogColor);
