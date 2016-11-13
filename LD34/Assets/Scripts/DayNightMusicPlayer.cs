@@ -27,13 +27,13 @@ public class DayNightMusicPlayer : MonoBehaviour {
         if (day24HFrac > 0.25f && day24HFrac < 0.75f)
         {
             // DAY
-            Debug.Log("day");
+            //Debug.Log("day");
             HandleMusic(m_dayPlayer, m_nightPlayer, m_dayMusic);
         }
         else
         {
             // NIGHT
-            Debug.Log("night");
+            //Debug.Log("night");
             HandleMusic(m_nightPlayer, m_dayPlayer, m_nightMusic);
         }
     }

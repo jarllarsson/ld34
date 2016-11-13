@@ -164,6 +164,7 @@ MonoBehaviour:
   m_age: 1
   m_billboard: {fileID: 469690}
   m_house: {fileID: 475674, guid: 45c714f1a0f4ef341926f5f01c471130, type: 2}
+  m_fire: {fileID: 468168, guid: 8afb045541a3eb6409bcf4b9163602b1, type: 2}
   m_houseMask:
     serializedVersion: 2
     m_Bits: 2048
@@ -191,6 +192,7 @@ MonoBehaviour:
   m_waterAvoidTime: 1
   m_loiter: 1
   m_enabled: 1
+  m_danceAroundTarget: {fileID: 0}
   m_rootMotionController: {fileID: 0}
 --- !u!135 &13563616
 SphereCollider:
@@ -251,6 +253,10 @@ Prefab:
       propertyPath: m_ignoreLayer.m_Bits
       value: 1296
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_fire
+      value: 
+      objectReference: {fileID: 468168, guid: 8afb045541a3eb6409bcf4b9163602b1, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 137990}

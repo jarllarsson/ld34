@@ -17,7 +17,12 @@ public class DayCycleSimulator : MonoBehaviour
 
     public Transform m_sun;
     public Renderer m_nightStarsOverlay;
+    public static DayCycleSimulator instance;
 
+    void Awake()
+    {
+        instance = this;
+    }
 	// Use this for initialization
 	void Start () 
     {

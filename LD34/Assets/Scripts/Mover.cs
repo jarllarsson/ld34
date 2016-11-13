@@ -11,7 +11,10 @@ public class Mover : MonoBehaviour {
     private float m_waterAvoidTimer = 0.0f;
     public bool m_loiter = false;
     public bool m_enabled = false;
+    public Transform m_danceAroundTarget = null;
     public RootMotionController m_rootMotionController = null;
+    private static float s_danceController;
+    private static bool s_danceUpdated = false;
 	// Use this for initialization
 	void Start () {
 	
@@ -22,22 +25,60 @@ public class Mover : MonoBehaviour {
     {
         if (m_enabled)
         {
-            if (m_loiter)
+            if (!m_danceAroundTarget)
             {
-                if (Random.Range(0, 1000) > 990)
+                if (m_loiter)
                 {
-                    m_dir = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+                    if (Random.Range(0, 1000) > 990)
+                    {
+                        m_dir = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+                    }
+                    else if (Random.Range(0, 2000) > 1990)
+                    {
+                        m_dir = Vector2.zero;
+                    }
+                }           
+            }
+            else
+            {
+                // if dance target, go to and dance
+                Vector3 diff = new Vector3(transform.position.x,0.0f,transform.position.z) - new Vector3(m_danceAroundTarget.position.x, 0.0f, m_danceAroundTarget.position.z);
+                if (Vector3.Magnitude(diff) > 2.5f) // size of circle
+                {
+                    m_dir = -new Vector2(diff.x, diff.z).normalized;
                 }
-                else if (Random.Range(0, 2000) > 1990)
+                else if (Vector3.Magnitude(diff) < 2.4f) // too far in
                 {
-                    m_dir = Vector2.zero;
+                    m_dir = new Vector2(1.0f, 0.0f);
+                }
+                else
+                {
+                    // DANCE!
+                    if (!s_danceUpdated)
+                    {
+                        s_danceUpdated = true;
+                        s_danceController = Mathf.Sin(Time.time);
+                    }
+                    if (s_danceController < -0.2f)
+                    {
+                        m_dir = new Vector2(diff.z, -diff.x).normalized;
+                    }
+                    else if (s_danceController > 0.2f)
+                    {
+                        m_dir = -new Vector2(diff.z, -diff.x).normalized;
+                    }
+                    else
+                    {
+                        m_dir = Vector2.zero;
+                    }
                 }
             }
             if (m_dir.sqrMagnitude > 0)
             {
                 Move();
             }
-            
+
+
 
             Debug.DrawLine(transform.position, transform.position + new Vector3(m_dir.x, 0.0f, m_dir.y)*10.0f, Color.magenta);
 
@@ -49,6 +90,11 @@ public class Mover : MonoBehaviour {
             m_dir = Vector3.zero;
         }
 	}
+
+    void LateUpdate()
+    {
+     s_danceUpdated = false;
+    }
 
     private void Move()
     {
